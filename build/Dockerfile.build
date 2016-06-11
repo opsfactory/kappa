@@ -1,0 +1,10 @@
+FROM golang:1.6.2-alpine
+
+ADD . /kappa
+
+WORKDIR /kappa
+
+RUN gofmt -s -w .
+
+RUN go build .
+
