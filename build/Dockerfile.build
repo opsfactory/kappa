@@ -1,10 +1,10 @@
 FROM golang:1.6.2-alpine
 
-ADD . /kappa
+ADD . /go/src/github.com/opsfactory/kappa
 
-WORKDIR /kappa
+WORKDIR /go/src/github.com/opsfactory/kappa
 
 RUN gofmt -s -w .
 
-RUN go build .
+RUN go install
 

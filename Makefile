@@ -2,7 +2,7 @@
 
 build:
 	docker build -t kappa-build -f build/Dockerfile.build .
-	docker run --rm kappa-build sh -c "cat /kappa/kappa" > bin/kappa
+	docker run --rm kappa-build sh -c "cat /go/bin/kappa" > bin/kappa
 	docker build -t kappa:latest -f build/Dockerfile .
 
 clean:
