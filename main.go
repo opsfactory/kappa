@@ -1,9 +1,28 @@
 package main
 
 import (
-	"fmt"
+	"log"
+
+	"github.com/opsfactory/kappa/config"
 )
 
 func main() {
-	fmt.Println("I do nothing at the moment, see design/ to know what I'm meant to do")
+	data := `
+backend: docker
+backend_config:
+  TLSCACert: "/etc/docker/ca.crt"
+  TLSCert: "/etc/docker/server.pem"
+  TLSKey: "/etc/docker/server.key"
+  AllowInsecure: false
+metrics:
+  queue_length: "/usr/local/bin/queue_length.sh"
+  reqsec:  "/usr/local/bin/reqsec.sh"
+`
+
+	c, err := config.Parse(data)
+	if err != nil {
+		log.Fatalf("error: %v", err)
+	}
+
+	config.Print(c)
 }
