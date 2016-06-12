@@ -21,9 +21,9 @@ type Config struct {
 	Metrics       map[string]Metric `yaml:"metrics"`
 }
 
-func Parse(y string) (Config, error) {
+func Parse(y []byte) (Config, error) {
 	var c Config
-	err := yaml.Unmarshal([]byte(y), &c)
+	err := yaml.Unmarshal(y, &c)
 
 	if err != nil {
 		return c, err
