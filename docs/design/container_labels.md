@@ -14,6 +14,6 @@ app:
     labels:
         - "kappa.min=1"
         - "kappa.max=10"
-        - "kappa.max=5"
+        - "kappa.rate=5"
         - "kappa.metric=queue"
 ```
