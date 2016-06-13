@@ -9,17 +9,25 @@ import (
 )
 
 type Backend interface {
-	Poll(events <-chan string)
+	Monitor(events <-chan string)
 	Exec(actions chan<- string)
 }
 
 func NewBackend(name string, c config.BackendConfig) (Backend, error) {
+	var (
+		b   Backend
+		err error
+	)
 
-	// Invoking the Engine
 	switch strings.ToLower(name) {
 	case "docker":
-		return &docker.Docker{}, nil
+		b, err = docker.NewDockerBackend(c)
+	default:
+		err = fmt.Errorf("Unknown backend %s.", name)
 	}
 
-	return nil, fmt.Errorf("Unknown backend %s.", name)
+	if err != nil {
+		return nil, err
+	}
+	return b, nil
 }

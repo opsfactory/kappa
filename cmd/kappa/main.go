@@ -63,8 +63,10 @@ func main() {
 		if err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		go b.Poll(events)
-		b.Exec(actions)
+		go b.Monitor(events)
+		go b.Exec(actions)
+		for {
+		}
 
 		return nil
 	}
