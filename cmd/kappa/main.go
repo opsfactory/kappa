@@ -6,6 +6,7 @@ import (
 
 	"github.com/opsfactory/kappa/backend"
 	"github.com/opsfactory/kappa/config"
+	"github.com/opsfactory/kappa/version"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/urfave/cli"
@@ -18,8 +19,9 @@ var (
 func main() {
 	app := cli.NewApp()
 	app.Name = "kappa"
+	app.Version = version.FullVersion()
 	app.Author = "@opsfactory"
-	app.Usage = "native docker autoscaling for all the most popular orchestration frameworks"
+	app.Usage = "native docker autoscaling for the most popular orchestration frameworks"
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "config, C",
