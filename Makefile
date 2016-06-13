@@ -16,7 +16,7 @@ deps:
 build: format build-app
 
 build-app:
-	@cd cmd/$(APP) && go build -o ../../bin/$(APP) -ldflags "-w -X github.com/$(REPO)/version.GitCommit=$(COMMIT) -X github.com/$(REPO)/version.Build=$(BUILD)" .
+	@cd cmd/$(APP) && go build -o ../../bin/$(APP) -a -tags "netgo static_build" -installsuffix netgo -ldflags "-w -X github.com/$(REPO)/version.GitCommit=$(COMMIT) -X github.com/$(REPO)/version.Build=$(BUILD)" .
 
 build-container:
 	@docker build -t kappa-build -f build/Dockerfile.build .

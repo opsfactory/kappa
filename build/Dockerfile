@@ -1,4 +1,4 @@
-FROM alpine:3.3
+FROM scratch
 
 ADD bin/kappa /bin/kappa
 
