@@ -9,10 +9,6 @@ export GOPATH:=$(PWD)/vendor:$(GOPATH)
 
 all: build-container build-image
 
-deps:
-	@rm -rf Godeps vendor
-	@godep save ./...
-
 build: format build-app
 
 build-app:
@@ -37,4 +33,4 @@ clean:
 	@docker rmi kappa-build
 	@rm bin/$(APP)
 
-.PHONY: all deps build build-app build-container build-image format test clean
+.PHONY: all build build-app build-container build-image format test clean
