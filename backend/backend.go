@@ -14,20 +14,10 @@ type Backend interface {
 }
 
 func NewBackend(name string, c config.BackendConfig) (Backend, error) {
-	var (
-		b   Backend
-		err error
-	)
-
 	switch strings.ToLower(name) {
 	case "docker":
-		b, err = docker.NewDockerBackend(c)
-	default:
-		err = fmt.Errorf("Unknown backend %s.", name)
+		return docker.NewDockerBackend(c)
 	}
 
-	if err != nil {
-		return nil, err
-	}
-	return b, nil
+	return nil, fmt.Errorf("Unknown backend %s.", name)
 }

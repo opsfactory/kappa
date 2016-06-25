@@ -9,12 +9,12 @@ import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/docker/engine-api/client"
 	"github.com/docker/engine-api/types"
-	eventtypes "github.com/docker/engine-api/types/events"
+	"github.com/docker/engine-api/types/filters"
 	"github.com/docker/go-connections/sockets"
 	"github.com/docker/go-connections/tlsconfig"
 	"github.com/opsfactory/kappa/config"
 	"github.com/opsfactory/kappa/version"
-	dockerevents "github.com/vdemeester/docker-events"
+	"github.com/vdemeester/docker-events"
 )
 
 const (
@@ -63,12 +63,22 @@ func NewDockerBackend(c config.BackendConfig) (*Docker, error) {
 	return &Docker{client}, nil
 }
 
-func (d *Docker) Monitor(events <-chan string) {
-	ctx := context.Background()
+func (d *Docker) Monitor(ech <-chan string) {
 
-	errChan := dockerevents.Monitor(ctx, d, types.EventsOptions{}, func(event eventtypes.Message) {
-		log.Infof("%v\n", event)
-	})
+	ctx, _ := context.WithCancel(context.Background())
+
+	eh := events.NewHandler(events.ByAction)
+
+	eh.Handle("create", createHandlerBuilder(ech))
+	eh.Handle("destroy", destroyHandlerBuilder(ech))
+
+	filters := filters.NewArgs()
+	filters.Add("type", "container")
+	options := types.EventsOptions{
+		Filters: filters,
+	}
+
+	errChan := events.MonitorWithHandler(ctx, d.Client, options, eh)
 
 	if err := <-errChan; err != nil {
 		// Do something
