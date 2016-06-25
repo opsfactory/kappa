@@ -6,6 +6,7 @@ import (
 	"golang.org/x/net/context"
 
 	eventtypes "github.com/docker/engine-api/types/events"
+	"github.com/opsfactory/kappa/backend/label"
 )
 
 type handlerFunc func(eventtypes.Message)
@@ -19,6 +20,7 @@ func startHandlerBuilder(d *Docker, ech <-chan string) handlerFunc {
 		labels := config.Labels
 		fmt.Printf("[START] Image: %s\t Name: %s\n", cj.Image, cj.Name)
 
+		lc := label.NewLabelContainer()
 		for key, label := range labels {
 			fmt.Println("label: ", key, label)
 		}
