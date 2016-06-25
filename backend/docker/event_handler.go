@@ -3,31 +3,24 @@ package docker
 import (
 	"fmt"
 
+	"golang.org/x/net/context"
+
 	eventtypes "github.com/docker/engine-api/types/events"
 )
 
 type handlerFunc func(eventtypes.Message)
 
-//// Deprecated information from JSONMessage.
-//// With data only in container events.
-//Status string `json:"status,omitempty"`
-//ID     string `json:"id,omitempty"`
-//From   string `json:"from,omitempty"`
-
-//Type   string
-//Action string
-//Actor  Actor
-
-//Time     int64 `json:"time,omitempty"`
-//TimeNano int64 `json:"timeNano,omitempty"`
-func createHandlerBuilder(d *Docker, ech <-chan string) handlerFunc {
+func startHandlerBuilder(d *Docker, ech <-chan string) handlerFunc {
 	return func(m eventtypes.Message) {
-		fmt.Printf("[CREATE] id: %s", m.ID)
-	}
-}
+		ctx, _ := context.WithCancel(context.Background())
+		cj, _ := d.ContainerInspect(ctx, m.ID)
 
-func destroyHandlerBuilder(d *Docker, ech <-chan string) handlerFunc {
-	return func(m eventtypes.Message) {
-		fmt.Printf("[DESTROY] id: %s", m.ID)
+		config := cj.Config
+		labels := config.Labels
+		fmt.Printf("[START] Image: %s\t Name: %s\n", cj.Image, cj.Name)
+
+		for key, label := range labels {
+			fmt.Println("label: ", key, label)
+		}
 	}
 }

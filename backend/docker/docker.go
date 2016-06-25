@@ -69,8 +69,7 @@ func (d *Docker) Monitor(ech <-chan string) {
 
 	eh := events.NewHandler(events.ByAction)
 
-	eh.Handle("create", createHandlerBuilder(ech))
-	eh.Handle("destroy", destroyHandlerBuilder(ech))
+	eh.Handle("start", startHandlerBuilder(d, ech))
 
 	filters := filters.NewArgs()
 	filters.Add("type", "container")
