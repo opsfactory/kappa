@@ -17,12 +17,9 @@ func startHandlerBuilder(d *Docker, ech <-chan string) handlerFunc {
 		cj, _ := d.ContainerInspect(ctx, m.ID)
 
 		config := cj.Config
-		labels := config.Labels
 		fmt.Printf("[START] Image: %s\t Name: %s\n", cj.Image, cj.Name)
 
-		lc := label.NewLabelContainer()
-		for key, label := range labels {
-			fmt.Println("label: ", key, label)
-		}
+		lc := label.NewLabelContainerFromMap(config.Labels)
+		fmt.Printf("Labels: %v", lc)
 	}
 }

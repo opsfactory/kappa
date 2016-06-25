@@ -1,6 +1,9 @@
 package label
 
-import "reflect"
+import (
+	"fmt"
+	"reflect"
+)
 
 type LabelContainer struct {
 	Min    string `label:"kappa.min"`
@@ -9,17 +12,26 @@ type LabelContainer struct {
 	Metric string `label:"kappa.metric"`
 }
 
+func (lc LabelContainer) String() string {
+	return fmt.Sprintf(
+		"LabelContainer{Min: %s, Max: %s, Rate: %s, Metric: %s}",
+		lc.Min, lc.Max, lc.Rate, lc.Metric)
+}
+
 func NewLabelContainer() *LabelContainer {
 	return &LabelContainer{}
 }
 
 func NewLabelContainerFromMap(m map[string]string) *LabelContainer {
+
 	lc := NewLabelContainer()
-	st := reflect.TypeOf(lc)
+	st := reflect.TypeOf(*lc)
+	sv := reflect.ValueOf(lc).Elem()
 	for i := 0; i < st.NumField(); i++ {
-		f := st.Field(i)
-		tag := f.Tag.Get("label")
-		reflect.ValueOf(f).SetString(m[tag])
+		ft := st.Field(i)
+		fv := sv.Field(i)
+		tag := ft.Tag.Get("label")
+		fv.SetString(m[tag])
 	}
 	return lc
 }
