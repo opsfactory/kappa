@@ -13,7 +13,7 @@ const (
 	DockerBackend     ContainerBackend = "docker"
 	SwarmBackend      ContainerBackend = "swarm"
 	KubernetesBackend ContainerBackend = "kube"
-	MesosBackedn      ContainerBackend = "mesos"
+	MesosBackend      ContainerBackend = "mesos"
 )
 
 type Container struct {
