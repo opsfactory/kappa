@@ -68,8 +68,8 @@ func (d *Docker) Monitor(ech <-chan string) {
 	ctx, _ := context.WithCancel(context.Background())
 
 	eh := events.NewHandler(events.ByAction)
-
 	eh.Handle("start", startHandlerBuilder(d, ech))
+	eh.Handle("die", dieHandlerBuilder(d, ech))
 
 	filters := filters.NewArgs()
 	filters.Add("type", "container")
