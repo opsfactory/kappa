@@ -1,3 +1,4 @@
+// Package docker implements the docker-engine backend.
 package docker
 
 import (
