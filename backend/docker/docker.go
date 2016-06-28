@@ -67,7 +67,7 @@ func NewDockerBackend(c config.BackendConfig) (*Docker, error) {
 
 func (d *Docker) Monitor(ech chan<- *kappaevent.Event) {
 
-	ctx, _ := context.WithCancel(context.Background())
+	log.Debug("[Docker][Monitor] Start")
 
 	eh := events.NewHandler(events.ByAction)
 	eh.Handle("start", startHandlerBuilder(d, ech))
@@ -79,6 +79,7 @@ func (d *Docker) Monitor(ech chan<- *kappaevent.Event) {
 		Filters: filters,
 	}
 
+	ctx, _ := context.WithCancel(context.Background())
 	errChan := events.MonitorWithHandler(ctx, d.Client, options, eh)
 	for err := range errChan {
 		if err != nil {
@@ -88,5 +89,5 @@ func (d *Docker) Monitor(ech chan<- *kappaevent.Event) {
 }
 
 func (d *Docker) Exec(actions chan<- string) {
-	log.Info("Docker Exec")
+	log.Debug("[Docker][Exec] Start")
 }

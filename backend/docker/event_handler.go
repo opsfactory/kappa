@@ -14,7 +14,7 @@ func startHandlerBuilder(d *Docker, ech chan<- *kappaevent.Event) handlerFunc {
 		if err != nil {
 			return
 		}
-		log.Infof("[START] ID: %s Name: %s Labels: %s\n", c.Replicas[0], c.Name, c.Labels)
+		log.Debugf("[Docker][EventHandler][Start] ID: %s Name: %s Labels: %s", c.Replicas[0], c.Name, c.Labels)
 		ech <- kappaevent.NewContainerStartEvent(c)
 	}
 }
@@ -25,7 +25,7 @@ func dieHandlerBuilder(d *Docker, ech chan<- *kappaevent.Event) handlerFunc {
 		if err != nil {
 			return
 		}
-		log.Printf("[DIE] ID: %s Name: %s\n", c.Replicas[0], c.Name)
+		log.Debugf("[Docker][EventHandler][Die] ID: %s Name: %s", c.Replicas[0], c.Name)
 		ech <- kappaevent.NewContainerDieEvent(c)
 	}
 }

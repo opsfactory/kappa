@@ -12,7 +12,7 @@ type LabelContainer struct {
 	Metric string `label:"kappa.metric"`
 }
 
-func (lc LabelContainer) String() string {
+func (lc *LabelContainer) String() string {
 	return fmt.Sprintf(
 		"LabelContainer{Min: %s, Max: %s, Rate: %s, Metric: %s}",
 		lc.Min, lc.Max, lc.Rate, lc.Metric)
