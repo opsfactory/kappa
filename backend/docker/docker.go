@@ -14,6 +14,7 @@ import (
 	"github.com/docker/go-connections/sockets"
 	"github.com/docker/go-connections/tlsconfig"
 	"github.com/opsfactory/kappa/config"
+	kappaevent "github.com/opsfactory/kappa/container/event"
 	"github.com/opsfactory/kappa/version"
 	"github.com/vdemeester/docker-events"
 )
@@ -64,7 +65,7 @@ func NewDockerBackend(c config.BackendConfig) (*Docker, error) {
 	return &Docker{client}, nil
 }
 
-func (d *Docker) Monitor(ech <-chan string) {
+func (d *Docker) Monitor(ech chan<- *kappaevent.Event) {
 
 	ctx, _ := context.WithCancel(context.Background())
 
@@ -79,9 +80,10 @@ func (d *Docker) Monitor(ech <-chan string) {
 	}
 
 	errChan := events.MonitorWithHandler(ctx, d.Client, options, eh)
-
-	if err := <-errChan; err != nil {
-		// Do something
+	for err := range errChan {
+		if err != nil {
+			log.Errorf("Error polling Docker events: %v.", err)
+		}
 	}
 }
 

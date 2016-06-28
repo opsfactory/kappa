@@ -9,6 +9,8 @@ import (
 	"github.com/opsfactory/kappa/version"
 
 	log "github.com/Sirupsen/logrus"
+	kappaevent "github.com/opsfactory/kappa/container/event"
+
 	"github.com/urfave/cli"
 )
 
@@ -56,16 +58,17 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 
-		events := make(chan string)
+		ech := make(chan *kappaevent.Event)
 		actions := make(chan string)
 
 		b, err := backend.NewBackend(c.Backend, c.BackendConfig)
 		if err != nil {
 			log.Fatalf("error: %v", err)
 		}
-		go b.Monitor(events)
+		go b.Monitor(ech)
 		go b.Exec(actions)
-		for {
+		for ev := range ech {
+			log.Infof("[EVENT] %s", ev)
 		}
 
 		return nil

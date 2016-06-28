@@ -6,10 +6,11 @@ import (
 
 	"github.com/opsfactory/kappa/backend/docker"
 	"github.com/opsfactory/kappa/config"
+	kappaevent "github.com/opsfactory/kappa/container/event"
 )
 
 type Backend interface {
-	Monitor(events <-chan string)
+	Monitor(events chan<- *kappaevent.Event)
 	Exec(actions chan<- string)
 }
 

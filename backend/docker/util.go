@@ -1,6 +1,7 @@
 package docker
 
 import (
+	log "github.com/Sirupsen/logrus"
 	"github.com/docker/engine-api/types"
 	"github.com/opsfactory/kappa/container"
 	"github.com/opsfactory/kappa/container/label"
@@ -12,13 +13,18 @@ func NewContainerFromDockerJSON(j types.ContainerJSON) *container.Container {
 	c.Name = j.Name
 	c.Labels = label.NewLabelContainerFromMap(j.Config.Labels)
 	c.NumReplicas = 1
-	c.DesideredReplicas = 1
+	c.DesiredReplicas = 1
 	c.Replicas = container.ContainerReplicas{j.ID}
-	c.Backed = container.DockerBackend
+	c.Backend = container.DockerBackend
 	return c
 }
 
-func (d *Docker) DockerInspect(id string) (types.ContainerJSON, error) {
+func (d *Docker) DockerInspect(id string) (*container.Container, error) {
 	ctx, _ := context.WithCancel(context.Background())
-	return d.ContainerInspect(ctx, id)
+	cj, err := d.ContainerInspect(ctx, id)
+	if err != nil {
+		log.Errorf("Error inspecting docker container %s: %v", id, err)
+		return nil, err
+	}
+	return NewContainerFromDockerJSON(cj), nil
 }
