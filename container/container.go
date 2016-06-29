@@ -6,15 +6,14 @@ import (
 	"github.com/opsfactory/kappa/container/label"
 )
 
-type ContainerReplicas []string
-type ContainerBackend string
-
 const (
-	DockerBackend     ContainerBackend = "docker"
-	SwarmBackend      ContainerBackend = "swarm"
-	KubernetesBackend ContainerBackend = "kube"
-	MesosBackend      ContainerBackend = "mesos"
+	DockerBackend     string = "docker"
+	SwarmBackend      string = "swarm"
+	KubernetesBackend string = "kube"
+	MesosBackend      string = "mesos"
 )
+
+type ContainerReplicas []string
 
 type Container struct {
 	Name            string
@@ -22,7 +21,7 @@ type Container struct {
 	Replicas        ContainerReplicas
 	NumReplicas     int
 	DesiredReplicas int
-	Backend         ContainerBackend
+	Backend         string
 }
 
 func NewContainer() Container {

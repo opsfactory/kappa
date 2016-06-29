@@ -4,8 +4,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"github.com/opsfactory/kappa/backend"
 	"github.com/opsfactory/kappa/config"
+	"github.com/opsfactory/kappa/container/backend"
 	"github.com/opsfactory/kappa/version"
 
 	log "github.com/Sirupsen/logrus"
