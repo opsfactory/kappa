@@ -19,7 +19,7 @@ func NewContainerFromDockerJSON(j types.ContainerJSON) container.Container {
 	return c
 }
 
-func (d *Docker) DockerInspect(id string) (container.Container, error) {
+func (d *Docker) Inspect(id string) (container.Container, error) {
 	ctx, _ := context.WithCancel(context.Background())
 	cj, err := d.ContainerInspect(ctx, id)
 	if err != nil {

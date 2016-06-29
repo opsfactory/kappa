@@ -10,7 +10,7 @@ type handlerFunc func(eventtypes.Message)
 
 func startHandlerBuilder(d *Docker, ech chan<- kappaevent.Event) handlerFunc {
 	return func(m eventtypes.Message) {
-		c, err := d.DockerInspect(m.ID)
+		c, err := d.Inspect(m.ID)
 		if err != nil {
 			return
 		}
@@ -21,7 +21,7 @@ func startHandlerBuilder(d *Docker, ech chan<- kappaevent.Event) handlerFunc {
 
 func dieHandlerBuilder(d *Docker, ech chan<- kappaevent.Event) handlerFunc {
 	return func(m eventtypes.Message) {
-		c, err := d.DockerInspect(m.ID)
+		c, err := d.Inspect(m.ID)
 		if err != nil {
 			return
 		}
