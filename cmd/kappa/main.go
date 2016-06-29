@@ -58,7 +58,7 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 
-		ech := make(chan *kappaevent.Event)
+		ech := make(chan kappaevent.Event)
 		actions := make(chan string)
 
 		b, err := backend.NewBackend(c.Backend, c.BackendConfig)

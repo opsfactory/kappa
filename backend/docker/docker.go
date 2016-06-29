@@ -65,7 +65,7 @@ func NewDockerBackend(c config.BackendConfig) (*Docker, error) {
 	return &Docker{client}, nil
 }
 
-func (d *Docker) Monitor(ech chan<- *kappaevent.Event) {
+func (d *Docker) Monitor(ech chan<- kappaevent.Event) {
 
 	log.Debug("[Docker][Monitor] Start")
 

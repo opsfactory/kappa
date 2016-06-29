@@ -10,7 +10,7 @@ import (
 )
 
 type Backend interface {
-	Monitor(events chan<- *kappaevent.Event)
+	Monitor(events chan<- kappaevent.Event)
 	Exec(actions chan<- string)
 }
 

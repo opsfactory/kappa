@@ -23,18 +23,18 @@ func (ev Event) String() string {
 		ev.Container, ev.Type)
 }
 
-func NewEvent() *Event {
-	return &Event{}
+func NewEvent() Event {
+	return Event{}
 }
 
-func NewContainerStartEvent(c *container.Container) *Event {
+func NewContainerStartEvent(c *container.Container) Event {
 	e := NewEvent()
 	e.Container = c
 	e.Type = ContainerStart
 	return e
 }
 
-func NewContainerDieEvent(c *container.Container) *Event {
+func NewContainerDieEvent(c *container.Container) Event {
 	e := NewEvent()
 	e.Container = c
 	e.Type = ContainerDie

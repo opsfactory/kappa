@@ -8,24 +8,24 @@ import (
 
 type handlerFunc func(eventtypes.Message)
 
-func startHandlerBuilder(d *Docker, ech chan<- *kappaevent.Event) handlerFunc {
+func startHandlerBuilder(d *Docker, ech chan<- kappaevent.Event) handlerFunc {
 	return func(m eventtypes.Message) {
 		c, err := d.DockerInspect(m.ID)
 		if err != nil {
 			return
 		}
 		log.Debugf("[Docker][EventHandler][Start] ID: %s Name: %s Labels: %s", c.Replicas[0], c.Name, c.Labels)
-		ech <- kappaevent.NewContainerStartEvent(c)
+		ech <- kappaevent.NewContainerStartEvent(&c)
 	}
 }
 
-func dieHandlerBuilder(d *Docker, ech chan<- *kappaevent.Event) handlerFunc {
+func dieHandlerBuilder(d *Docker, ech chan<- kappaevent.Event) handlerFunc {
 	return func(m eventtypes.Message) {
 		c, err := d.DockerInspect(m.ID)
 		if err != nil {
 			return
 		}
 		log.Debugf("[Docker][EventHandler][Die] ID: %s Name: %s", c.Replicas[0], c.Name)
-		ech <- kappaevent.NewContainerDieEvent(c)
+		ech <- kappaevent.NewContainerDieEvent(&c)
 	}
 }

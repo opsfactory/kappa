@@ -8,7 +8,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-func NewContainerFromDockerJSON(j types.ContainerJSON) *container.Container {
+func NewContainerFromDockerJSON(j types.ContainerJSON) container.Container {
 	c := container.NewContainer()
 	c.Name = j.Name
 	c.Labels = label.NewLabelContainerFromMap(j.Config.Labels)
@@ -19,12 +19,12 @@ func NewContainerFromDockerJSON(j types.ContainerJSON) *container.Container {
 	return c
 }
 
-func (d *Docker) DockerInspect(id string) (*container.Container, error) {
+func (d *Docker) DockerInspect(id string) (container.Container, error) {
 	ctx, _ := context.WithCancel(context.Background())
 	cj, err := d.ContainerInspect(ctx, id)
 	if err != nil {
 		log.Errorf("Error inspecting docker container %s: %v", id, err)
-		return nil, err
+		return container.NewContainer(), err
 	}
 	return NewContainerFromDockerJSON(cj), nil
 }
