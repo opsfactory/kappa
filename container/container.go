@@ -29,7 +29,7 @@ func NewContainer() *Container {
 	return &Container{}
 }
 
-func (c *Container) String() string {
+func (c Container) String() string {
 	return fmt.Sprintf(
 		"Container{Name: %s, Labels: %s, Replicas: %s, "+
 			"NumReplicas: %d, DesiredReplicas: %d, Backend %s}",

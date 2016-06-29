@@ -18,7 +18,7 @@ type Event struct {
 	Type      EventType
 }
 
-func (ev *Event) String() string {
+func (ev Event) String() string {
 	return fmt.Sprintf("Event{Container: %s, Type: %s}",
 		ev.Container, ev.Type)
 }

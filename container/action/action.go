@@ -20,7 +20,7 @@ type Action struct {
 	Unit      ActionUnit
 }
 
-func (a *Action) String() string {
+func (a Action) String() string {
 	return fmt.Sprintf("Action{Container: %s, Command: %s, Unit: %d}",
 		a.Container, a.Command, a.Unit)
 }
