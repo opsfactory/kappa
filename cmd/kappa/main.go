@@ -5,11 +5,10 @@ import (
 	"os"
 
 	"github.com/opsfactory/kappa/config"
-	"github.com/opsfactory/kappa/container/backend"
+	"github.com/opsfactory/kappa/engine"
 	"github.com/opsfactory/kappa/version"
 
 	log "github.com/Sirupsen/logrus"
-	kappaevent "github.com/opsfactory/kappa/container/event"
 
 	"github.com/urfave/cli"
 )
@@ -23,7 +22,7 @@ func main() {
 	app.Name = "kappa"
 	app.Version = version.FullVersion()
 	app.Author = "@opsfactory"
-	app.Usage = "native docker autoscaling for the most popular orchestration frameworks"
+	app.Usage = "Native docker autoscaling for the most popular orchestration frameworks."
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "config, C",
@@ -48,6 +47,7 @@ func main() {
 		return nil
 	}
 	app.Action = func(ctx *cli.Context) error {
+
 		log.Infof("Reading config from %s.", configFile)
 		data, err := ioutil.ReadFile(configFile)
 		if err != nil {
@@ -58,18 +58,11 @@ func main() {
 			log.Fatalf("error: %v", err)
 		}
 
-		ech := make(chan kappaevent.Event)
-		actions := make(chan string)
-
-		b, err := backend.NewBackend(c.Backend, c.BackendConfig)
+		eng, err := engine.NewEngine(c)
 		if err != nil {
-			log.Fatalf("error: %v", err)
+			log.Fatalf("Unexpected error starting Kappa with the given configuration: %v", err)
 		}
-		go b.Monitor(ech)
-		go b.Exec(actions)
-		for ev := range ech {
-			log.Infof("[EVENT] %s", ev)
-		}
+		go eng.Run()
 
 		return nil
 	}

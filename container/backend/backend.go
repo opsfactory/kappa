@@ -6,13 +6,14 @@ import (
 
 	"github.com/opsfactory/kappa/config"
 	"github.com/opsfactory/kappa/container"
+	"github.com/opsfactory/kappa/container/action"
 	"github.com/opsfactory/kappa/container/backend/docker"
-	kappaevent "github.com/opsfactory/kappa/container/event"
+	"github.com/opsfactory/kappa/container/event"
 )
 
 type Backend interface {
-	Monitor(events chan<- kappaevent.Event)
-	Exec(actions chan<- string)
+	Monitor(events chan<- event.Event)
+	Exec(actions chan<- action.Action)
 }
 
 func NewBackend(name string, c config.BackendConfig) (Backend, error) {

@@ -14,9 +14,11 @@ import (
 	"github.com/docker/go-connections/sockets"
 	"github.com/docker/go-connections/tlsconfig"
 	"github.com/opsfactory/kappa/config"
-	kappaevent "github.com/opsfactory/kappa/container/event"
-	"github.com/opsfactory/kappa/version"
+	kaction "github.com/opsfactory/kappa/container/action"
+	kevent "github.com/opsfactory/kappa/container/event"
 	"github.com/vdemeester/docker-events"
+
+	"github.com/opsfactory/kappa/version"
 )
 
 const (
@@ -65,7 +67,7 @@ func NewDockerBackend(c config.BackendConfig) (*Docker, error) {
 	return &Docker{client}, nil
 }
 
-func (d *Docker) Monitor(ech chan<- kappaevent.Event) {
+func (d *Docker) Monitor(ech chan<- kevent.Event) {
 
 	log.Debug("[Docker][Monitor] Start")
 
@@ -88,6 +90,6 @@ func (d *Docker) Monitor(ech chan<- kappaevent.Event) {
 	}
 }
 
-func (d *Docker) Exec(actions chan<- string) {
+func (d *Docker) Exec(actions chan<- kaction.Action) {
 	log.Debug("[Docker][Exec] Start")
 }
