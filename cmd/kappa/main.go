@@ -62,7 +62,7 @@ func main() {
 		if err != nil {
 			log.Fatalf("Unexpected error starting Kappa with the given configuration: %v", err)
 		}
-		go eng.Run()
+		eng.Run()
 
 		return nil
 	}
