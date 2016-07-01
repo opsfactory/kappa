@@ -1,7 +1,6 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 
 	"github.com/opsfactory/kappa/config"
@@ -47,24 +46,17 @@ func main() {
 		return nil
 	}
 	app.Action = func(ctx *cli.Context) error {
-
 		log.Infof("Reading config from %s.", configFile)
-		data, err := ioutil.ReadFile(configFile)
+		cfg, err := config.NewConfigFromFile(configFile)
 		if err != nil {
-			log.Fatalf("Unable to read config file %s: %v.", configFile, err)
-		}
-		c, err := config.Parse(data)
-		if err != nil {
-			log.Fatalf("error: %v", err)
+			log.Fatalf("Unexpected error parsing configuration: %v", err)
 		}
 
-		eng, err := engine.NewEngine(c)
+		eng, err := engine.NewEngine(cfg)
 		if err != nil {
 			log.Fatalf("Unexpected error starting Kappa with the given configuration: %v", err)
 		}
-		eng.Run()
-
-		return nil
+		return eng.Run()
 	}
 
 	if err := app.Run(os.Args); err != nil {

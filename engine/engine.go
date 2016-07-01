@@ -13,11 +13,6 @@ type Engine struct {
 	backend backend.Backend
 }
 
-var (
-	eventChan  chan (event.Event)
-	actionChan chan (action.Action)
-)
-
 func NewEngine(cfg config.Config) (*Engine, error) {
 
 	b, err := backend.NewBackend(cfg.Backend, cfg.BackendConfig)
@@ -30,16 +25,28 @@ func NewEngine(cfg config.Config) (*Engine, error) {
 
 }
 
-func (e *Engine) Run() {
+func (e Engine) Run() error {
 
 	// channel setup
-	eventChan := make(chan event.Event)
-	actionChan := make(chan action.Action)
+	errChan := make(chan error)
+	eventsChan := make(chan event.Event)
+	actionsChan := make(chan action.Action)
 
-	go e.backend.Monitor(eventChan)
-	go e.backend.Exec(actionChan)
-	for ev := range eventChan {
+	go e.backend.Monitor(eventsChan, errChan)
+	go e.backend.Exec(actionsChan, errChan)
+	go e.handleEvent(eventsChan, actionsChan, errChan)
+
+	for err := range errChan {
+		log.Errorf("Unexpected error: %v.", err)
+		return err
+	}
+	return nil
+
+}
+
+func (e Engine) handleEvent(eventsChan <-chan event.Event,
+	actionsChan <-chan action.Action, errChan chan<- error) {
+	for ev := range eventsChan {
 		log.Infof("[EVENT] %s", ev)
 	}
-
 }

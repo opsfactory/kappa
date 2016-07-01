@@ -67,13 +67,13 @@ func NewDockerBackend(c config.BackendConfig) (*Docker, error) {
 	return &Docker{client}, nil
 }
 
-func (d *Docker) Monitor(ech chan<- kevent.Event) {
+func (d *Docker) Monitor(eventsChan chan<- kevent.Event, errChan chan<- error) {
 
 	log.Debug("[Docker][Monitor] Start")
 
 	eh := events.NewHandler(events.ByAction)
-	eh.Handle("start", startHandlerBuilder(d, ech))
-	eh.Handle("die", dieHandlerBuilder(d, ech))
+	eh.Handle("start", startHandlerBuilder(d, eventsChan))
+	eh.Handle("die", dieHandlerBuilder(d, eventsChan))
 
 	filters := filters.NewArgs()
 	filters.Add("type", "container")
@@ -82,14 +82,14 @@ func (d *Docker) Monitor(ech chan<- kevent.Event) {
 	}
 
 	ctx, _ := context.WithCancel(context.Background())
-	errChan := events.MonitorWithHandler(ctx, d.Client, options, eh)
-	for err := range errChan {
+	hErrChan := events.MonitorWithHandler(ctx, d.Client, options, eh)
+	for err := range hErrChan {
 		if err != nil {
 			log.Errorf("Error polling Docker events: %v.", err)
 		}
 	}
 }
 
-func (d *Docker) Exec(actions chan<- kaction.Action) {
+func (d *Docker) Exec(actionsChan chan<- kaction.Action, errChan chan<- error) {
 	log.Debug("[Docker][Exec] Start")
 }
