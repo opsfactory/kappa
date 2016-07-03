@@ -1,14 +1,14 @@
 package main
 
 import (
-	"io/ioutil"
 	"os"
 
-	"github.com/opsfactory/kappa/backend"
 	"github.com/opsfactory/kappa/config"
+	"github.com/opsfactory/kappa/engine"
 	"github.com/opsfactory/kappa/version"
 
 	log "github.com/Sirupsen/logrus"
+
 	"github.com/urfave/cli"
 )
 
@@ -21,7 +21,7 @@ func main() {
 	app.Name = "kappa"
 	app.Version = version.FullVersion()
 	app.Author = "@opsfactory"
-	app.Usage = "native docker autoscaling for the most popular orchestration frameworks"
+	app.Usage = "Native docker autoscaling for the most popular orchestration frameworks."
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "config, C",
@@ -47,28 +47,16 @@ func main() {
 	}
 	app.Action = func(ctx *cli.Context) error {
 		log.Infof("Reading config from %s.", configFile)
-		data, err := ioutil.ReadFile(configFile)
+		cfg, err := config.NewConfigFromFile(configFile)
 		if err != nil {
-			log.Fatalf("Unable to read config file %s: %v.", configFile, err)
-		}
-		c, err := config.Parse(data)
-		if err != nil {
-			log.Fatalf("error: %v", err)
+			log.Fatalf("Unexpected error parsing configuration: %v", err)
 		}
 
-		events := make(chan string)
-		actions := make(chan string)
-
-		b, err := backend.NewBackend(c.Backend, c.BackendConfig)
+		eng, err := engine.NewEngine(cfg)
 		if err != nil {
-			log.Fatalf("error: %v", err)
+			log.Fatalf("Unexpected error starting Kappa with the given configuration: %v", err)
 		}
-		go b.Monitor(events)
-		go b.Exec(actions)
-		for {
-		}
-
-		return nil
+		return eng.Run()
 	}
 
 	if err := app.Run(os.Args); err != nil {

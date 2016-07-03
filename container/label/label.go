@@ -18,15 +18,15 @@ func (lc LabelContainer) String() string {
 		lc.Min, lc.Max, lc.Rate, lc.Metric)
 }
 
-func NewLabelContainer() *LabelContainer {
-	return &LabelContainer{}
+func NewLabelContainer() LabelContainer {
+	return LabelContainer{}
 }
 
-func NewLabelContainerFromMap(m map[string]string) *LabelContainer {
+func NewLabelContainerFromMap(m map[string]string) LabelContainer {
 
 	lc := NewLabelContainer()
-	st := reflect.TypeOf(*lc)
-	sv := reflect.ValueOf(lc).Elem()
+	st := reflect.TypeOf(lc)
+	sv := reflect.ValueOf(&lc).Elem()
 	for i := 0; i < st.NumField(); i++ {
 		ft := st.Field(i)
 		fv := sv.Field(i)

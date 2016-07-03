@@ -1,3 +1,4 @@
+// Package docker implements the docker-engine backend.
 package docker
 
 import (
@@ -13,8 +14,11 @@ import (
 	"github.com/docker/go-connections/sockets"
 	"github.com/docker/go-connections/tlsconfig"
 	"github.com/opsfactory/kappa/config"
-	"github.com/opsfactory/kappa/version"
+	kaction "github.com/opsfactory/kappa/container/action"
+	kevent "github.com/opsfactory/kappa/container/event"
 	"github.com/vdemeester/docker-events"
+
+	"github.com/opsfactory/kappa/version"
 )
 
 const (
@@ -63,13 +67,13 @@ func NewDockerBackend(c config.BackendConfig) (*Docker, error) {
 	return &Docker{client}, nil
 }
 
-func (d *Docker) Monitor(ech <-chan string) {
+func (d *Docker) Monitor(eventsChan chan<- kevent.Event, errChan chan<- error) {
 
-	ctx, _ := context.WithCancel(context.Background())
+	log.Debug("[Docker][Monitor] Start")
 
 	eh := events.NewHandler(events.ByAction)
-
-	eh.Handle("start", startHandlerBuilder(d, ech))
+	eh.Handle("start", startHandlerBuilder(d, eventsChan))
+	eh.Handle("die", dieHandlerBuilder(d, eventsChan))
 
 	filters := filters.NewArgs()
 	filters.Add("type", "container")
@@ -77,13 +81,15 @@ func (d *Docker) Monitor(ech <-chan string) {
 		Filters: filters,
 	}
 
-	errChan := events.MonitorWithHandler(ctx, d.Client, options, eh)
-
-	if err := <-errChan; err != nil {
-		// Do something
+	ctx, _ := context.WithCancel(context.Background())
+	hErrChan := events.MonitorWithHandler(ctx, d.Client, options, eh)
+	for err := range hErrChan {
+		if err != nil {
+			log.Errorf("Error polling Docker events: %v.", err)
+		}
 	}
 }
 
-func (d *Docker) Exec(actions chan<- string) {
-	log.Info("Docker Exec")
+func (d *Docker) Exec(actionsChan chan<- kaction.Action, errChan chan<- error) {
+	log.Debug("[Docker][Exec] Start")
 }

@@ -2,8 +2,11 @@ package config
 
 import (
 	"fmt"
+	"io/ioutil"
 
 	"gopkg.in/yaml.v2"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 type Metric string
@@ -21,22 +24,25 @@ type Config struct {
 	Metrics       map[string]Metric `yaml:"metrics"`
 }
 
-func Parse(y []byte) (Config, error) {
+func parse(y []byte) (Config, error) {
 	var c Config
 	err := yaml.Unmarshal(y, &c)
-
 	if err != nil {
 		return c, err
 	}
-
-	if err != nil {
-		return c, err
-	}
-
 	return c, nil
 }
 
-func Print(c Config) {
+func NewConfigFromFile(file string) (Config, error) {
+	data, err := ioutil.ReadFile(file)
+	if err != nil {
+		log.Fatalf("Unable to read config file %s: %v.", file, err)
+		return Config{}, nil
+	}
+	return parse(data)
+}
+
+func (c Config) Print() {
 	fmt.Println("Backend: ", c.Backend)
 	fmt.Println("BackendConfig")
 	fmt.Println("\tTLSCACert ", c.BackendConfig.TLSCACert)

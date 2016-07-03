@@ -15,7 +15,7 @@ metrics:
   queue_length: "/usr/local/bin/queue_length.sh"
   reqsec:  "/usr/local/bin/reqsec.sh"
 `)
-	c, err := Parse(yml)
+	c, err := parse(yml)
 
 	if err != nil {
 		t.Error(err)
