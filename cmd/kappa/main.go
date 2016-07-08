@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/opsfactory/kappa/config"
+	"github.com/opsfactory/kappa/container/backend"
 	"github.com/opsfactory/kappa/engine"
 	"github.com/opsfactory/kappa/version"
 
@@ -55,10 +56,13 @@ func main() {
 			log.Fatalf("Unexpected error parsing configuration: %v", err)
 		}
 
-		eng, err := engine.NewEngine(cfg)
+		b, err := backend.NewBackend(cfg.Backend, cfg.BackendConfig)
 		if err != nil {
-			log.Fatalf("Unexpected error starting Kappa with the given configuration: %v", err)
+			log.Fatalf("Unable to create backend %s: %v", cfg.Backend, err)
+			return err
 		}
+
+		eng := engine.NewEngine(b)
 		return eng.Run()
 	}
 
