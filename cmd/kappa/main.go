@@ -22,6 +22,7 @@ func main() {
 	app.Version = version.FullVersion()
 	app.Author = "@opsfactory"
 	app.Usage = "Native docker autoscaling for the most popular orchestration frameworks."
+
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "config, C",
@@ -32,6 +33,7 @@ func main() {
 			Usage: "Enable debug logging",
 		},
 	}
+
 	app.Before = func(c *cli.Context) error {
 		if c.Bool("debug") {
 			log.SetLevel(log.DebugLevel)
@@ -45,6 +47,7 @@ func main() {
 
 		return nil
 	}
+
 	app.Action = func(ctx *cli.Context) error {
 		log.Infof("Reading config from %s.", configFile)
 		cfg, err := config.NewConfigFromFile(configFile)
@@ -62,4 +65,5 @@ func main() {
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
 	}
+
 }

@@ -21,6 +21,10 @@ type Action struct {
 }
 
 func (a Action) String() string {
-	return fmt.Sprintf("Action{Container: %s, Command: %s, Unit: %d}",
-		a.Container, a.Command, a.Unit)
+	return fmt.Sprintf(
+		"Action{Container: %s, Command: %s, Unit: %d}",
+		a.Container,
+		a.Command,
+		a.Unit,
+	)
 }
