@@ -14,7 +14,7 @@ const (
 )
 
 type Event struct {
-	Container *container.Container
+	Container container.Container
 	Type      EventType
 }
 
@@ -23,20 +23,16 @@ func (ev Event) String() string {
 		ev.Container, ev.Type)
 }
 
-func NewEvent() Event {
-	return Event{}
+func newEvent(c container.Container, t EventType) Event {
+	return Event{
+		Container: c,
+		Type:      t,
+	}
+}
+func NewContainerStartEvent(c container.Container) Event {
+	return newEvent(c, ContainerStart)
 }
 
-func NewContainerStartEvent(c *container.Container) Event {
-	e := NewEvent()
-	e.Container = c
-	e.Type = ContainerStart
-	return e
-}
-
-func NewContainerDieEvent(c *container.Container) Event {
-	e := NewEvent()
-	e.Container = c
-	e.Type = ContainerDie
-	return e
+func NewContainerDieEvent(c container.Container) Event {
+	return newEvent(c, ContainerDie)
 }

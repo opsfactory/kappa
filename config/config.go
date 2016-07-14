@@ -33,13 +33,17 @@ func parse(y []byte) (Config, error) {
 	return c, nil
 }
 
+func NewConfigFromByteArray(config []byte) (Config, error) {
+	return parse(config)
+}
+
 func NewConfigFromFile(file string) (Config, error) {
 	data, err := ioutil.ReadFile(file)
 	if err != nil {
 		log.Fatalf("Unable to read config file %s: %v.", file, err)
 		return Config{}, nil
 	}
-	return parse(data)
+	return NewConfigFromByteArray(data)
 }
 
 func (c Config) Print() {
