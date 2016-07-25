@@ -3,16 +3,16 @@ package engine
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/opsfactory/kappa/container/action"
-	"github.com/opsfactory/kappa/container/backend"
+	containerBackend "github.com/opsfactory/kappa/container/backend"
 	"github.com/opsfactory/kappa/container/event"
 )
 
 type Engine struct {
-	backend backend.Backend
+	containerBackend containerBackend.Backend
 }
 
-func NewEngine(b backend.Backend) *Engine {
-	return &Engine{backend: b}
+func NewEngine(b containerBackend.Backend) *Engine {
+	return &Engine{containerBackend: b}
 }
 
 func (e Engine) Run() error {
@@ -21,8 +21,8 @@ func (e Engine) Run() error {
 	eventsChan := make(chan event.Event)
 	actionsChan := make(chan action.Action)
 
-	go e.backend.Monitor(eventsChan, errChan)
-	go e.backend.Exec(actionsChan, errChan)
+	go e.containerBackend.Monitor(eventsChan, errChan)
+	go e.containerBackend.Exec(actionsChan, errChan)
 	go e.handleEvent(eventsChan, actionsChan, errChan)
 
 	for err := range errChan {
