@@ -12,6 +12,7 @@ import (
 type Metric string
 
 type BackendConfig struct {
+	DockerHost    string `yaml:"DockerHost"`
 	TLSCACert     string `yaml:"TLSCACert"`
 	TLSCert       string `yaml:"TLSCert"`
 	TLSKey        string `yaml:"TLSKey"`
@@ -49,6 +50,7 @@ func NewConfigFromFile(file string) (Config, error) {
 func (c Config) Print() {
 	fmt.Println("Backend: ", c.Backend)
 	fmt.Println("BackendConfig")
+	fmt.Println("\tDocker Host ", c.BackendConfig.DockerHost)
 	fmt.Println("\tTLSCACert ", c.BackendConfig.TLSCACert)
 	fmt.Println("\tTLSCert ", c.BackendConfig.TLSCert)
 	fmt.Println("\tTLSKey ", c.BackendConfig.TLSKey)

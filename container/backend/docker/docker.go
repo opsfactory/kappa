@@ -22,7 +22,6 @@ import (
 )
 
 const (
-	DockerAPI        = "unix:///var/run/docker.sock"
 	DockerAPIVersion = "v1.23"
 )
 
@@ -35,6 +34,13 @@ func NewDockerBackend(c config.BackendConfig) (*Docker, error) {
 	httpHeaders := map[string]string{
 		"User-Agent": fmt.Sprintf("kappa/%s", version.Version),
 	}
+
+	dockerHost := "unix:///var/run/docker.sock"
+
+	if c.DockerHost != "" {
+		dockerHost = c.DockerHost
+	}
+
 	if c.TLSCert != "" && c.TLSKey != "" {
 		tlsOptions := tlsconfig.Options{
 			CAFile:             c.TLSCACert,
@@ -42,6 +48,7 @@ func NewDockerBackend(c config.BackendConfig) (*Docker, error) {
 			KeyFile:            c.TLSKey,
 			InsecureSkipVerify: c.AllowInsecure,
 		}
+
 		config, err := tlsconfig.Client(tlsOptions)
 		if err != nil {
 			return nil, err
@@ -49,7 +56,7 @@ func NewDockerBackend(c config.BackendConfig) (*Docker, error) {
 		tr := &http.Transport{
 			TLSClientConfig: config,
 		}
-		proto, addr, _, err := client.ParseHost(DockerAPI)
+		proto, addr, _, err := client.ParseHost(dockerHost)
 		if err != nil {
 			return nil, err
 		}
@@ -59,7 +66,7 @@ func NewDockerBackend(c config.BackendConfig) (*Docker, error) {
 		}
 	}
 
-	client, err := client.NewClient(DockerAPI, DockerAPIVersion, httpClient, httpHeaders)
+	client, err := client.NewClient(dockerHost, DockerAPIVersion, httpClient, httpHeaders)
 	if err != nil {
 		return nil, err
 	}
