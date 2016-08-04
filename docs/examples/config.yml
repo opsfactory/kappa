@@ -1,10 +1,7 @@
 ---
 backend: docker
 backend_config:
-  TLSCACert: "/etc/docker/ca.crt"
-  TLSCert: "/etc/docker/server.pem"
-  TLSKey: "/etc/docker/server.key"
-  AllowInsecure: false
+  DockerHost: "unix:///var/run/docker.sock"
 metrics:
   queue_length: "/usr/local/bin/queue_length.sh"
   reqsec:  "/usr/local/bin/reqsec.sh"
