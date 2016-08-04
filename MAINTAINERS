@@ -4,11 +4,6 @@
         email = "andrea.tosy@gmail.com"
         login = "atosatto"
 
-    [people.jnardiello]
-        name = "Jacopo Nardiello"
-        email = "jacopo.nardiello@gmail.com"
-        login = "jnardiello"
-
     [people.fntlnz]
         name = "Fontana Lorenzo"
         email = "fontanalorenz@gmail.com"
