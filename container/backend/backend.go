@@ -13,7 +13,7 @@ import (
 
 type Backend interface {
 	Monitor(eventsChan chan<- event.Event, errChan chan<- error)
-	Exec(actionsChan chan<- action.Action, errChan chan<- error)
+	Exec(actionsChan <-chan action.Action, errChan chan<- error)
 }
 
 func NewBackend(name string, c config.BackendConfig) (Backend, error) {

@@ -97,6 +97,6 @@ func (d *Docker) Monitor(eventsChan chan<- kevent.Event, errChan chan<- error) {
 	}
 }
 
-func (d *Docker) Exec(actionsChan chan<- kaction.Action, errChan chan<- error) {
+func (d *Docker) Exec(actionsChan <-chan kaction.Action, errChan chan<- error) {
 	log.Debug("[Docker][Exec] Start")
 }
